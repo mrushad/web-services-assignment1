@@ -3,11 +3,13 @@ from .shortURL import generate_short_id
 
 app = Flask(__name__)
 
-url_db = {} #Need to store urls in CSV file instead
+url_db = {"12ihorvfkjab": "google.com",
+  "ajkfkjabab": "pinterest.com",
+  "fsuifbb": "facebook.com"
+} #Need to store urls in CSV file instead
 
 #we will create all RESTful endpoints here
 #a repository of URLs - mapped to a short identifier
-
 #GET: the keys 
 #POST:  url to shorten and return id
 #DELETE: not found
@@ -39,7 +41,9 @@ def send_keys():
 def get_url(id):
     if(request.method == 'GET'): 
         if id in url_db:
-            return redirect(url_db[id], code=301)  # Redirect to full URL
+            # return url_db([id])
+            print("Entering GET")
+            return jsonify(url_db[id]),301  # Redirect to full URL
         return jsonify({"error": "URL not found"}), 404
     
     elif(request.method == 'PUT'):
