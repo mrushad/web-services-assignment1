@@ -1,6 +1,9 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, redirect
+from .shortURL import generate_short_id
+
 app = Flask(__name__)
 
+url_db = {} #Need to store urls in CSV file instead
 
 #we will create all RESTful endpoints here
 #a repository of URLs - mapped to a short identifier
@@ -12,31 +15,49 @@ app = Flask(__name__)
 @app.route("/", methods = ["GET","POST","DELETE"])
 def send_keys():
     if(request.method == 'GET'): 
-        return "keys"
+        return jsonify(list(url_db.keys())), 200
+    
     elif(request.method == 'POST'): 
-        # def shorten_url(url):
-        return "id"
+        data = request.json
+        if "url" not in data:
+            return jsonify({"error": "Missing URL"}), 400
+        
+        url = data["url"]
+        short_id = generate_short_id(url)
+        url_db[short_id] = url
+        return jsonify({"short_id": short_id, "full_url": url}), 201
+
     else:
-    # def delete_entry(url):
-        return "404"
+        return jsonify({"error": "DELETE on / is not allowed"}), 404
 
 #call this api with(URL as input) 
 #GET :get the url 
 #PUT : put this id
 #DELETE: delete the entry with this id
 
-@app.route("/:id", methods = ["GET","PUT","DELETE"])
-def get_url():
+@app.route("/<string:id>", methods = ["GET","PUT","DELETE"])
+def get_url(id):
     if(request.method == 'GET'): 
-            return "Send URL corresponding to the id"
-
+        if id in url_db:
+            return redirect(url_db[id], code=301)  # Redirect to full URL
+        return jsonify({"error": "URL not found"}), 404
+    
     elif(request.method == 'PUT'):
-        # def put_id(url, id):
-        return "Update url and id"
+        data = request.json
+        print(data)
+        if "url" not in data:
+            return jsonify({"error": "Missing URL"}), 400
+        
+        if id in url_db:
+            url_db[id] = data["url"]  # Update existing entry
+            return jsonify({"message": "URL updated"}), 200
+        return jsonify({"error": "URL ID not found"}), 404
 
     else:
-        # def delete_url(id):
-        return "Entry with {id} deleted"
+        if id in url_db:
+            del url_db[id]
+            return jsonify({"message": "deleted"}), 204 #some output issue here
+        return jsonify({"error": "URL ID not found"}), 404
 
-
-
+if __name__ == '__main__':
+    app.run(debug=True)
