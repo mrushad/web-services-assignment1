@@ -1,13 +1,10 @@
 from flask import Flask, jsonify, request, redirect
-from shortURL import generate_short_id
-from checkValid import is_valid_url
+from .shortURL import generate_short_id
+from .checkValid import is_valid_url
 
 app = Flask(__name__)
 
-url_db = {"12ihorvfkjab": "google.com",
-  "ajkfkjabab": "pinterest.com",
-  "fsuifbb": "facebook.com"
-} #Need to store urls in CSV file instead
+url_db = {} #Need to store urls in CSV file instead
 
 #we will create all RESTful endpoints here
 #a repository of URLs - mapped to a short identifier
