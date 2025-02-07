@@ -22,4 +22,3 @@ def generate_short_id(url):
     print(num)
     print(convert_base62(num))
     return convert_base62(num)
-#could probably use a different hashing method
