@@ -2,7 +2,7 @@
 
 (Assignment 1 - Group 13)
 
-This project implements an URL shortening service using RESTful API. The service allows users generate a short ID for URLs, retrieve the original URLs using the short ID, update and delete the URLs.
+This project implements an URL shortening service using RESTful API. The service allows users to generate a short ID for URLs, retrieve the original URLs using the short ID, update and delete the URLs.
 
 ## Features
 
