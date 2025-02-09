@@ -39,7 +39,7 @@ def send_keys():
 #PUT : put this id
 #DELETE: delete the entry with this id
 
-@app.route("/<string:id>", methods = ["GET","PUT","DELETE"])
+@app.route("/<id>", methods = ["GET","PUT","DELETE"])
 def get_url(id):
     if(request.method == 'GET'): 
         if id in url_db:
@@ -59,7 +59,7 @@ def get_url(id):
     else:
         if id in url_db:
             del url_db[id]
-            return jsonify({"message": "deleted"}), 204 #some output issue here
+            return jsonify({"message": "URL deleted"}), 204
         return jsonify({"error": "URL ID not found"}), 404
 
 if __name__ == '__main__':
