@@ -44,6 +44,9 @@ def get_url(id):
         if "value" not in data:
             return jsonify({"error": "Missing URL"}), 400
         
+        if not is_valid_url(data["value"]):
+            return jsonify({"error": "Invalid URL"}), 400
+        
         if redis.exists(id):
             redis.set(id, data["value"])  # Update existing entry
             return jsonify({"message": "URL updated"}), 200

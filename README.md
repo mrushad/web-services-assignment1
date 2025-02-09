@@ -21,17 +21,24 @@ This project implements an URL shortening service using RESTful API. The service
 
 ## Setup Instructions
 
-Clone the repository to your local machine:
-
-```jsx
-git clone <repository-url>
-cd web-services-assignment1
-```
-
 Navigate to backend folder:
 
 ```jsx
-cd backend
+cd web-services-assignment1/backend
+```
+
+Install redis and start a redis service. The last command should return `PONG` to show the redis server is running successfully:
+
+```jsx
+brew install redis
+brew services start redis
+redis-cli ping
+```
+
+Activate the virtual environment:
+
+```jsx
+source venv/bin/activate
 ```
 
 Set the FLASK_APP environment variable and run the Flask application:
@@ -54,7 +61,7 @@ source venv/bin/activate
 Navigate to test folder:
 
 ```jsx
-cd / api / test;
+cd api/test
 ```
 
 Run test file:
