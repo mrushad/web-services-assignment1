@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from redis import Redis
-from shortURL import generate_short_id
-from checkValid import is_valid_url
+from .shortURL import generate_short_id
+from .checkValid import is_valid_url
 
 app = Flask(__name__)
 
