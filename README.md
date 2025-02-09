@@ -45,10 +45,16 @@ The API will be accessible at `http://127.0.0.1:5000`
 
 ## Running Tests
 
+From backend directory, activate the virtual environment:
+
+```jsx
+source venv/bin/activate
+```
+
 Navigate to test folder:
 
 ```jsx
-cd backend/test
+cd / api / test;
 ```
 
 Run test file:
