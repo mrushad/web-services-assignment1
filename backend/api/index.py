@@ -42,7 +42,6 @@ def get_url(id):
     elif request.method == 'PUT':
         data = request.get_json(force=True)
         if "url" not in data:
-            print("here1")
             return jsonify({"error": "Missing URL"}), 400
         
         if redis.exists(id):
