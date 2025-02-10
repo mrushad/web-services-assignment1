@@ -17,8 +17,5 @@ def convert_base62(num):
 
 def generate_short_id(url):
     string = generate_hash5(url) #a137b
-    print(string)
     num = int(string, 16) 
-    print(num)
-    print(convert_base62(num))
     return convert_base62(num)
