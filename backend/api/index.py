@@ -40,16 +40,16 @@ def get_url(id):
         return jsonify({"error": "URL not found"}), 404
     
     elif request.method == 'PUT':
-        data = request.json
-        if "value" not in data:
+        data = request.get_json(force=True)
+        if "url" not in data:
+            print("here1")
             return jsonify({"error": "Missing URL"}), 400
         
-        if not is_valid_url(data["value"]):
-            return jsonify({"error": "Invalid URL"}), 400
-        
         if redis.exists(id):
-            redis.set(id, data["value"])  # Update existing entry
-            return jsonify({"message": "URL updated"}), 200
+            if is_valid_url(data["url"]):
+                redis.set(id, data["url"])  # Update existing entry
+                return jsonify({"message": "URL updated"}), 200
+            return jsonify({"error": "Invalid URL"}), 400
         return jsonify({"error": "URL ID not found"}), 404
 
     else:
