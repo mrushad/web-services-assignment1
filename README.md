@@ -44,7 +44,7 @@ source venv/bin/activate
 Set the FLASK_APP environment variable and run the Flask application:
 
 ```jsx
-export FLASK_APP=./api/index.py
+export FLASK_APP=./api/url-shortener-service/index.py
 flask run -h 0.0.0.0
 ```
 
