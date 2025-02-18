@@ -1,44 +1,79 @@
-from flask import Flask, jsonify, request
-from redis import Redis
+from flask import Flask, request, jsonify
+import hashlib
+import jwt
+import datetime
+import logging
 
-from generateJwt import generateJWT
-
-#Authentication service: database of users used to login. Send out JWTs
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'your_generated_secret_key'
 
-# Initialize Redis connection
-redis = Redis(host='localhost', port=6380, db=0)
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
 
-@app.route("/users", methods=["POST"])
+users = {}
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
+@app.route('/users', methods=['POST'])
 def create_user():
     data = request.json
-    #create query
-    if redis.exists(data["username"]):
-        return jsonify({"error": "Username already exists"}), 409
-    else:
-        redis.set(data["username"], data["password"])
-        return jsonify({"message": "New user created!"}), 200
+    username = data.get('username')
+    password = data.get('password')
     
-@app.route("/users", methods=["PUT"])
+    if username in users:
+        return jsonify({"error": "duplicate"}), 409
+    
+    users[username] = hash_password(password)
+    return jsonify({"message": "User created"}), 201
+
+@app.route('/users', methods=['PUT'])
 def update_password():
     data = request.json
-    if(data["password"]==redis.get(data["username"])):
-        redis.set(data["username"], data["new_password"])
-        return jsonify({"message": "Password updated!"}), 200
-    else:
-        return jsonify({"message":"Forbidden"}), 403
-    #do redis
-    # check if username exists, check if old password matches to the one in database and then update with new password
+    username = data.get('username')
+    old_password = data.get('old-password')
+    new_password = data.get('new-password')
+    
+    if username not in users or users[username] != hash_password(old_password):
+        return jsonify({"error": "forbidden"}), 403
+    
+    users[username] = hash_password(new_password)
+    return jsonify({"message": "Password updated"}), 200
 
-@app.route("/users/login", methods=["POST"])
+@app.route('/users/login', methods=['POST'])
 def login():
     data = request.json
-    if redis.exists(data["username"]) and redis.exists(data["password"]):
-        return generateJWT(data), 200
-    else: 
-        return jsonify({"message Forbidden"}), 403
-        # Check if username and password exist in the table and generate a JWT or else return 403
+    username = data.get('username')
+    password = data.get('password')
     
-    # use this JWT for authentication to validate the token and see if the user is login
+    if username not in users or users[username] != hash_password(password):
+        logging.debug(f"Login failed for user: {username}")
+        return jsonify({"error": "forbidden"}), 403
+    
+    token = jwt.encode({
+        'username': username,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
+    }, app.config['SECRET_KEY'], algorithm='HS256')
+    
+    logging.debug(f"Login successful for user: {username}, token: {token}")
+    return jsonify({"token": token}), 200
+
+@app.route('/verify', methods=['POST'])
+def verify():
+    data = request.json
+    token = data.get('token')
+    username = verify_token(token)
+    if username:
+        return jsonify({"username": username}), 200
+    return jsonify({"error": "forbidden"}), 403
+
+def verify_token(token):
+    try:
+        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        return data['username']
+    except Exception as e:
+        logging.debug(f"Token verification failed: {e}")
+        return None
+
 if __name__ == '__main__':
-    app.run(port=5001)
+    app.run(port=5001, debug=True)
