@@ -18,6 +18,11 @@ redis = Redis(host='localhost', port=6379, db=0)
 4. User-> send the JWT to your shortener service authentication service 
 validate the token and see if the user is actually logged in
 """
+
+#for every function we need to check if the user is authenticated/ JWT matches?
+#communicate with the auth_service api to get the JWT of a user
+#validate the token to see if the user is actually logged in
+
 @app.route("/", methods=["GET", "POST", "DELETE"])
 def send_keys():
     if request.method == 'GET':
@@ -60,6 +65,7 @@ def get_url(id):
                 return jsonify({"message": "URL updated"}), 200
             return jsonify({"error": "Invalid URL"}), 400
         return jsonify({"error": "URL ID not found"}), 404
+    
 
     else:
         if redis.exists(id):

@@ -22,8 +22,8 @@ def create_user():
 @app.route("/users", methods=["PUT"])
 def update_password():
     data = request.json
-    if(data["password"]==redis("password")):
-        redis.update["password"]= data("new_password")
+    if(data["password"]==redis.get(data["username"])):
+        redis.set(data["username"], data["new_password"])
         return jsonify({"message": "Password updated!"}), 200
     else:
         return jsonify({"message":"Forbidden"}), 403
