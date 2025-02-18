@@ -8,6 +8,16 @@ app = Flask(__name__)
 # Initialize Redis connection
 redis = Redis(host='localhost', port=6379, db=0)
 
+
+#assignment 2
+
+"""
+1.Multi-user support. 
+2.Authentication service: database of users used to login. Send out JWTs
+3. URL shortner -> Users required to authenticate, associate mappings and permissions
+4. User-> send the JWT to your shortener service authentication service 
+validate the token and see if the user is actually logged in
+"""
 @app.route("/", methods=["GET", "POST", "DELETE"])
 def send_keys():
     if request.method == 'GET':
