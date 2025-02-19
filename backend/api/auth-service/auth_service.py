@@ -1,17 +1,25 @@
 from flask import Flask, request, jsonify
 import hashlib
-import jwt
-import datetime
 import logging
+from generateJwt import generate_jwt, verify_jwt
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_generated_secret_key'
+app.config['SECRET_KEY'] = 'abcd'
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
 users = {}
 
+'''
+TODO
+- ADD REFERENCES AND CREDITS
+- CHANGE SECRET_KEY
+- VERIFY ERROR CODES MATCH REQUIREMENT SPECIFICATION
+- VERIFY SECRET KEY IS NOT SHARED WITH URL SERVICE
+- 
+
+'''
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
@@ -50,11 +58,7 @@ def login():
         logging.debug(f"Login failed for user: {username}")
         return jsonify({"error": "forbidden"}), 403
     
-    token = jwt.encode({
-        'username': username,
-        'exp': datetime.datetime.utcnow() + datetime.timedelta(hours=1)
-    }, app.config['SECRET_KEY'], algorithm='HS256')
-    
+    token = generate_jwt(username, app.config['SECRET_KEY'])
     logging.debug(f"Login successful for user: {username}, token: {token}")
     return jsonify({"token": token}), 200
 
@@ -62,18 +66,10 @@ def login():
 def verify():
     data = request.json
     token = data.get('token')
-    username = verify_token(token)
+    username = verify_jwt(token, app.config['SECRET_KEY'])
     if username:
         return jsonify({"username": username}), 200
     return jsonify({"error": "forbidden"}), 403
-
-def verify_token(token):
-    try:
-        data = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        return data['username']
-    except Exception as e:
-        logging.debug(f"Token verification failed: {e}")
-        return None
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

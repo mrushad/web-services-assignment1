@@ -9,6 +9,11 @@ app = Flask(__name__)
 # Initialize Redis connection
 redis = Redis(host='localhost', port=6379, db=0)
 
+'''
+TODO: 
+- ADD REFERENCES
+- FIX DELETE ERROR CODES - currently same return code
+'''
 
 #assignment 2
 

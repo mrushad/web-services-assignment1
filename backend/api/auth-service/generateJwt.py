@@ -1,53 +1,66 @@
-import base64, hmac, hashlib, json, os
+import base64
+import hmac
+import hashlib
+import json
+import os
+import datetime
 
-#this function goes in url shortener service
+'''
+TODO
+- ADD REFERENCES/CREDITS IN CODE
+- VERIFY TOKEN GENERATION WITH POSTMAN
+'''
+
 def base64url_encode(data):
-        return base64.urlsafe_b64encode(data).decode('utf-8').rstrip("=")
-    
+    return base64.urlsafe_b64encode(data).decode('utf-8').rstrip("=")
+
 def hmac_sha256(key, message):
-        return hmac.new(
-            key.encode("utf-8"),
-            message.encode("utf-8"), 
-            hashlib.sha256
-        ).digest()
+    return hmac.new(
+        key.encode("utf-8"),
+        message.encode("utf-8"), 
+        hashlib.sha256
+    ).digest()
+
 def generate_secret():
     """Generates a secure random secret for HMAC."""
     # Generate a 256-bit random secret (32 bytes)
     secret = os.urandom(32)
     # Encode it in base64 to get a URL-safe string
     return base64.urlsafe_b64encode(secret).decode('utf-8').rstrip("=")
-def generateJWT():
-        # generate JSON
-        # base64 encoding
-        # sign it
-        # if user authenticated 
-        
-        # Header
-    header=  {
+
+def generate_jwt(username, secret):
+    header = {
         'alg': 'HS256',            
         'typ': 'JWT'
     }
             
-    payload= {
-        'sub': '1234567890',
-        'name': 'John Doe',
-        'admin': True
+    payload = {
+        'username': username,
+        'exp': (datetime.datetime.utcnow() + datetime.timedelta(hours=1)).timestamp()
     }
             
-        #encoding JSON 
     encoded_header = base64url_encode(json.dumps(header).encode("utf-8"))
     encoded_payload = base64url_encode(json.dumps(payload).encode("utf-8"))
         
-        #concatenate 
     message = f"{encoded_header}.{encoded_payload}"
-
-        #sign it
-        #The signature is used to verify that the sender of the JWT is who it says it is and to ensure that the message was’t changed in the way.
-    secret = generate_secret()
     signature = base64url_encode(hmac_sha256(secret, message))
-        #in url shortener we get JWT
 
     jwt_token = f"{message}.{signature}"
     return jwt_token
-print(generateJWT()) 
 
+def verify_jwt(token, secret):
+    try:
+        encoded_header, encoded_payload, signature = token.split('.')
+        message = f"{encoded_header}.{encoded_payload}"
+        expected_signature = base64url_encode(hmac_sha256(secret, message))
+        
+        if signature != expected_signature:
+            return None
+        
+        payload = json.loads(base64.urlsafe_b64decode(encoded_payload + '==').decode('utf-8'))
+        if datetime.datetime.utcnow().timestamp() > payload['exp']:
+            return None
+        
+        return payload['username']
+    except Exception as e:
+        return None
