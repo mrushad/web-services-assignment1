@@ -36,6 +36,7 @@ AUTH_SERVICE_URL = 'http://localhost:5001'
 logging.basicConfig(level=logging.DEBUG)
 
 def authenticate_request():
+    #send this token to authorise
     token = request.headers.get('Authorization')
     if not token:
         logging.debug("No token provided")

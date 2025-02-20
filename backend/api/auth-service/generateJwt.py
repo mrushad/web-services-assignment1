@@ -8,6 +8,7 @@ import datetime
 '''
 TODO
 - ADD REFERENCES/CREDITS IN CODE
+https://auth0.com/learn/json-web-tokens
 - VERIFY TOKEN GENERATION WITH POSTMAN
 '''
 
@@ -15,6 +16,7 @@ def base64url_encode(data):
     return base64.urlsafe_b64encode(data).decode('utf-8').rstrip("=")
 
 def hmac_sha256(key, message):
+    #key + hash function:  Hashed based method authentication
     return hmac.new(
         key.encode("utf-8"),
         message.encode("utf-8"), 
@@ -22,7 +24,6 @@ def hmac_sha256(key, message):
     ).digest()
 
 def generate_secret():
-    """Generates a secure random secret for HMAC."""
     # Generate a 256-bit random secret (32 bytes)
     secret = os.urandom(32)
     # Encode it in base64 to get a URL-safe string
@@ -48,6 +49,7 @@ def generate_jwt(username, secret):
     jwt_token = f"{message}.{signature}"
     return jwt_token
 
+#this function is called by URL shortner service and it checks if the message sent matches with signature that we get from the algorithm 
 def verify_jwt(token, secret):
     try:
         encoded_header, encoded_payload, signature = token.split('.')
@@ -64,3 +66,4 @@ def verify_jwt(token, secret):
         return payload['username']
     except Exception as e:
         return None
+    

@@ -1,16 +1,17 @@
 from flask import Flask, request, jsonify
 import hashlib
 import logging
-from generateJwt import generate_jwt, verify_jwt
+from generateJwt import generate_jwt, verify_jwt, generate_secret
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'abcd'
+app.config['SECRET_KEY'] = generate_secret()
+
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
 users = {}
-
+revoked_tokens = {}
 '''
 TODO
 - ADD REFERENCES AND CREDITS
@@ -61,7 +62,31 @@ def login():
     token = generate_jwt(username, app.config['SECRET_KEY'])
     logging.debug(f"Login successful for user: {username}, token: {token}")
     return jsonify({"token": token}), 200
+@app.route('/users/logout', methods=['POST'])
+def logout():
+    # data = request.json
+    
+    token = request.headers.get("Authorization")
+    if not token:
+        return jsonify({"error": "Missing token"}), 400
+    
+    # Remove "Bearer " prefix if present
+    if token.startswith("Bearer "):
+        token = token[len("Bearer "):]
+    username = verify_jwt(token, app.config['SECRET_KEY'])
 
+    revoked_tokens.add(token)  # Store revoked token
+
+    if username and username in revoked_tokens:
+        del revoked_tokens[username]
+        print("logged out")
+    logging.debug(f"Token Revoked: {token}")
+    
+    
+    logging.debug(f"Logging out user: {username}")
+
+    return jsonify({"message": "Logged out successfully"}), 200
+    
 @app.route('/verify', methods=['POST'])
 def verify():
     data = request.json
