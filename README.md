@@ -1,8 +1,8 @@
 # Web Services and Cloud-Based Systems
 
-(Assignment 1 - Group 13)
+(Assignment 2 - Group 13)
 
-This project implements an URL shortening service using RESTful API. The service allows users generate a short ID for URLs, retrieve the original URLs using the short ID, update and delete the URLs.
+In extension to the URL shortening service in assignment 1, this includes an authentication service to manage user accounts and secure access to the URL shortening service.
 
 ## Features
 
@@ -13,10 +13,18 @@ This project implements an URL shortening service using RESTful API. The service
 - **Delete URL**: Delete a specific URL using its short ID.
 - **Clear Database**: Clear all stored URLs.
 
+### Authentication Service
+- **Create User**: Register a new user account.
+- **Update Password**: Change the password for an existing user.
+- **Login**: Authenticate a user and generate a JWT token.
+- **Logout**: Revoke a user's JWT token.
+- **Verify Token**: Verify the validity of a JWT token.
+
 ## Prerequisites
 
 - Python 3.13.1 or higher
 - Flask
+- Redis
 - requests module (for testing)
 
 ## Setup Instructions
@@ -35,13 +43,7 @@ brew services start redis
 redis-cli ping
 ```
 
-Activate the virtual environment:
-
-```jsx
-source venv/bin/activate
-```
-
-Set the FLASK_APP environment variable and run the Flask application:
+To start the URL shortening service, set the FLASK_APP environment variable and run the Flask application:
 
 ```jsx
 export FLASK_APP=./api/url-shortener-service/index.py
@@ -49,6 +51,17 @@ flask run -h 0.0.0.0
 ```
 
 The API will be accessible at `http://127.0.0.1:5000`
+
+To start the authentication service, in a different terminal, set the FLASK_APP environment variable and run the Flask application:
+
+```jsx
+export FLASK_APP=./api/auth-service/auth_service.py
+flask run --port=5001
+```
+
+The API will be accessible at `http://127.0.0.1:5001`
+
+
 
 ## Running Tests
 
@@ -67,5 +80,5 @@ cd api/test
 Run test file:
 
 ```jsx
-python3 -s test.py
+python3 -s test_app.py
 ```
