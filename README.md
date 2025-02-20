@@ -6,6 +6,8 @@ In extension to the URL shortening service in assignment 1, this includes an aut
 
 ## Features
 
+### URL Shortening Service
+
 - **Generate short ID**: Generate an unique identifier for URL.
 - **Retrieve URL**: Retrieve original URL using short ID.
 - **List URL**: List all stored short IDs.
@@ -14,6 +16,7 @@ In extension to the URL shortening service in assignment 1, this includes an aut
 - **Clear Database**: Clear all stored URLs.
 
 ### Authentication Service
+
 - **Create User**: Register a new user account.
 - **Update Password**: Change the password for an existing user.
 - **Login**: Authenticate a user and generate a JWT token.
@@ -60,8 +63,6 @@ flask run --port=5001
 ```
 
 The API will be accessible at `http://127.0.0.1:5001`
-
-
 
 ## Running Tests
 
