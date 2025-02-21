@@ -9,14 +9,6 @@ app = Flask(__name__)
 # Initialize Redis connection
 redis = Redis(host='localhost', port=6379, db=0)
 
-'''
-TODO: 
-- ADD REFERENCES
-- FIX DELETE ERROR CODES - currently same return code
-'''
-
-#assignment 2
-
 """
 1.Multi-user support. 
 2.Authentication service: database of users used to login. Send out JWTs
@@ -25,14 +17,10 @@ TODO:
 validate the token and see if the user is actually logged in
 """
 
-#for every function we need to check if the user is authenticated/ JWT matches?
-#communicate with the auth_service api to get the JWT of a user
-#validate the token to see if the user is actually logged in
 
 
 AUTH_SERVICE_URL = 'http://localhost:5001'
 
-# Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
 def authenticate_request():
@@ -55,7 +43,7 @@ def send_keys():
         return jsonify({"error": "forbidden"}), 403
     
     if request.method == 'GET':
-        keys = [key.decode("utf-8") for key in redis.keys(f'{username}:*')]  # Decode keys from bytes
+        keys = [key.decode("utf-8") for key in redis.keys(f'{username}:*')]
         if not keys:
             return jsonify({"error": "No entries found"}), 404
         return jsonify({"value": keys}), 200
@@ -78,7 +66,6 @@ def send_keys():
         if not keys:
             return jsonify({"error": "No entries to delete"}), 404
         redis.delete(*keys)
-        ### CHECK ERROR CODE FOR ABOVE NO ENTRIES TO DELETE
         return jsonify({"message": "Database cleared"}), 404
 
 @app.route("/<id>", methods=["GET", "PUT", "DELETE"])

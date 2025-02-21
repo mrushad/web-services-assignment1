@@ -6,10 +6,8 @@ import os
 import datetime
 
 '''
-TODO
-- ADD REFERENCES/CREDITS IN CODE
+Credits:
 https://auth0.com/learn/json-web-tokens
-- VERIFY TOKEN GENERATION WITH POSTMAN
 '''
 
 def base64url_encode(data):

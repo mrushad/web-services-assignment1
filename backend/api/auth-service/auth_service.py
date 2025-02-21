@@ -12,15 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 users = {}
 revoked_tokens = {}
-'''
-TODO
-- ADD REFERENCES AND CREDITS
-- CHANGE SECRET_KEY
-- VERIFY ERROR CODES MATCH REQUIREMENT SPECIFICATION
-- VERIFY SECRET KEY IS NOT SHARED WITH URL SERVICE
-- 
 
-'''
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
