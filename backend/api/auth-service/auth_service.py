@@ -4,6 +4,7 @@ import logging
 from generateJwt import generate_jwt, verify_jwt, generate_secret
 
 app = Flask(__name__)
+#calling generate_secret function to generate a random secret
 app.config['SECRET_KEY'] = generate_secret()
 
 
@@ -12,10 +13,21 @@ logging.basicConfig(level=logging.DEBUG)
 
 users = {}
 revoked_tokens = {}
+'''
+TODO
+- ADD REFERENCES AND CREDITS
+- CHANGE SECRET_KEY
+- VERIFY ERROR CODES MATCH REQUIREMENT SPECIFICATION
+- VERIFY SECRET KEY IS NOT SHARED WITH URL SERVICE
+- 
 
+'''
+
+#hashing the password to sha256
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
+#route to create user 
 @app.route('/users', methods=['POST'])
 def create_user():
     data = request.json
@@ -28,6 +40,7 @@ def create_user():
     users[username] = hash_password(password)
     return jsonify({"message": "User created"}), 201
 
+#route to update user's password
 @app.route('/users', methods=['PUT'])
 def update_password():
     data = request.json
@@ -41,6 +54,7 @@ def update_password():
     users[username] = hash_password(new_password)
     return jsonify({"message": "Password updated"}), 200
 
+#route for user login
 @app.route('/users/login', methods=['POST'])
 def login():
     data = request.json
@@ -50,14 +64,25 @@ def login():
     if username not in users or users[username] != hash_password(password):
         logging.debug(f"Login failed for user: {username}")
         return jsonify({"error": "forbidden"}), 403
-    
+    #generate token using the username and secret key
     token = generate_jwt(username, app.config['SECRET_KEY'])
     logging.debug(f"Login successful for user: {username}, token: {token}")
     return jsonify({"token": token}), 200
+
+#BONUS IMPLEMENTATION: Verify route
+@app.route('/verify', methods=['POST'])
+def verify():
+    data = request.json
+    token = data.get('token')
+    username = verify_jwt(token, app.config['SECRET_KEY'])
+    if username:
+        return jsonify({"username": username}), 200
+    return jsonify({"error": "forbidden"}), 403
+
+#BONUS IMPLEMENTATION: logout route
 @app.route('/users/logout', methods=['POST'])
 def logout():
     # data = request.json
-    
     token = request.headers.get("Authorization")
     if not token:
         return jsonify({"error": "Missing token"}), 400
@@ -79,14 +104,6 @@ def logout():
 
     return jsonify({"message": "Logged out successfully"}), 200
     
-@app.route('/verify', methods=['POST'])
-def verify():
-    data = request.json
-    token = data.get('token')
-    username = verify_jwt(token, app.config['SECRET_KEY'])
-    if username:
-        return jsonify({"username": username}), 200
-    return jsonify({"error": "forbidden"}), 403
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)

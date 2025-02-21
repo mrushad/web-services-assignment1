@@ -42,8 +42,9 @@ def generate_jwt(username, secret):
     encoded_payload = base64url_encode(json.dumps(payload).encode("utf-8"))
         
     message = f"{encoded_header}.{encoded_payload}"
+    #signing the secret and message using hmac_sha256
     signature = base64url_encode(hmac_sha256(secret, message))
-
+    #concatenating the message and the signature
     jwt_token = f"{message}.{signature}"
     return jwt_token
 
@@ -54,6 +55,7 @@ def verify_jwt(token, secret):
         message = f"{encoded_header}.{encoded_payload}"
         expected_signature = base64url_encode(hmac_sha256(secret, message))
         
+        #checks signature with expected signature
         if signature != expected_signature:
             return None
         
