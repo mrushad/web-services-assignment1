@@ -19,7 +19,7 @@ validate the token and see if the user is actually logged in
 
 
 
-AUTH_SERVICE_URL = 'http://localhost:5001'
+AUTH_SERVICE_URL = 'http://localhost:8001'
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -100,4 +100,4 @@ def get_url(id):
         return jsonify({"error": "URL ID not found"}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=8000)
