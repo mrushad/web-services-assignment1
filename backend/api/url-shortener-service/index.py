@@ -7,7 +7,7 @@ import requests
 app = Flask(__name__)
 
 # Initialize Redis connection
-redis = Redis(host='localhost', port=6379, db=0)
+redis = Redis(host='redis_service', port=6379, db=0)
 
 """
 1.Multi-user support. 
@@ -19,7 +19,7 @@ validate the token and see if the user is actually logged in
 
 
 
-AUTH_SERVICE_URL = 'http://localhost:8001'
+AUTH_SERVICE_URL = 'http://auth_service:8001'
 
 logging.basicConfig(level=logging.DEBUG)
 
