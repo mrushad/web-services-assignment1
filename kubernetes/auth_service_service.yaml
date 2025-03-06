@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service-service
+spec:
+  selector:
+    app: auth-service
+  externalIPs:
+  - 145.100.130.90
+  ports:
+  - protocol: TCP
+    port: 8001
+    targetPort: 8001
+    nodePort: 30001
+  type: LoadBalancer
