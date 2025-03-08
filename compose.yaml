@@ -29,7 +29,7 @@ services:
       - auth_service
     environment:
       - REDIS_HOST=redis
-      - AUTH_SERVICE_URL=http://auth_service:8001
+      - AUTH_SERVICE_URL=http://auth-service-service:8001
     command: python3 backend/api/url-shortener-service/index.py
     ports:
       - "8000:8000"

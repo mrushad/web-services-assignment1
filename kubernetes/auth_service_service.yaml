@@ -6,7 +6,7 @@ spec:
   selector:
     app: auth-service
   externalIPs:
-  - 145.100.130.90
+    - "145.100.130.90"
   ports:
   - protocol: TCP
     port: 8001

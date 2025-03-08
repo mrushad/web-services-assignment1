@@ -14,9 +14,10 @@ spec:
     spec:
       containers:
       - name: auth-service
-        image: mrushad/web-services-assignment1-auth_service:latest
+        image: prathmeshawate/auth_service6
+        command: ["python3", "backend/api/auth-service/auth_service.py"]
         ports:
         - containerPort: 8001
         env:
         - name: REDIS_HOST
-          value: redis-service
+          value: redis

@@ -4,10 +4,18 @@ from shortURL import generate_short_id
 from checkValid import is_valid_url
 import logging
 import requests
+import os
+
+logging.basicConfig(level=logging.DEBUG)
+
 app = Flask(__name__)
 
 # Initialize Redis connection
-redis = Redis(host='redis_service', port=6379, db=0)
+# redis = Redis(host='redis_service', port=6379, db=0)
+redis = Redis(host='redis', port=6379, db=0)
+
+# REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
+# redis = Redis(host=REDIS_HOST, port=6379, db=0)
 
 """
 1.Multi-user support. 
@@ -19,9 +27,11 @@ validate the token and see if the user is actually logged in
 
 
 
-AUTH_SERVICE_URL = 'http://auth_service:8001'
+# AUTH_SERVICE_URL = 'http://auth-service-service:8001'
 
-logging.basicConfig(level=logging.DEBUG)
+
+AUTH_SERVICE_URL = os.getenv("AUTH_SERVICE_URL", "http://auth-service-service:8001")
+
 
 def authenticate_request():
     #send this token to authorise

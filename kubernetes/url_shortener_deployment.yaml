@@ -14,7 +14,8 @@ spec:
     spec:
       containers:
       - name: url-shortener
-        image: mrushad/web-services-assignment1-url_shortener:latest
+        image: prathmeshawate/url_service6
+        command: ["python3", "backend/api/url-shortener-service/index.py"]
         ports:
         - containerPort: 8000
         env:
