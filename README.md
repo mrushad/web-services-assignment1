@@ -1,5 +1,50 @@
 # Web Services and Cloud-Based Systems
 
+Assignment 3 - 
+
+
+## Prerequisites
+
+- Docker (v20.10.0 or higher)
+- Docker Compose (v1.29.2 or higher)
+
+- Kubernetes cluster 
+- kubectl (v1.21.0 or higher)
+- Docker (to build images)
+### 3.1 Virtualisation using Docker
+
+**Create docker image: docker -compose up --build**
+
+### 3.2 Orchestration using Kubernetes 
+
+### URL Shortening Service
+**Create the URL Shortening Kubernetes Service**:  kubectl -f apply url-shortener-service.yaml
+**Create the URL Shortening Kubernetes Deployment**: kubectl -f apply url-shortener-deployment.yaml
+
+
+### Authentication Service
+
+**Create the URL Shortening Kubernetes Service**:  kubectl -f apply auth-service-service.yaml
+**Create the URL Shortening Kubernetes Deployment**: kubectl -f apply auth-service-deployment.yaml
+
+### Redis Service
+
+
+**Create the Redis Kubernetes Service**:  kubectl -f apply redis-service.yaml
+**Create the Redis Kubernetes Deployment**: kubectl -f apply redis-deployment.yaml
+
+
+**CHECK PODS**: kubectl get pods
+
+
+
+
+
+
+
+-----------------------------------------------------------------------
+
+
 (Assignment 2 - Group 13)
 
 In extension to the URL shortening service in assignment 1, this includes an authentication service to manage user accounts and secure access to the URL shortening service.
