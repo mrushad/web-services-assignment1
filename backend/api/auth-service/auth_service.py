@@ -10,7 +10,7 @@ app = Flask(__name__)
 redis = Redis(host='redis', port=6379, db=0)
 
 # Calling generate_secret function to generate a random secret
-app.config['SECRET_KEY'] = generate_secret()
+app.config['SECRET_KEY'] = '29ac8931f285b1e0cb75438a'
 
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
